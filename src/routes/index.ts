@@ -1,14 +1,11 @@
-import { Router, RequestHandler } from 'express'
+import { Router } from 'express'
 
-import {
-	indexUser
-} from '../controllers/userController'
+import userRouter from './userRoute'
+
 
 
 const router = Router()
 
-router.use('/users',
-	indexUser
-)
+router.use( '/users', userRouter )
 
 export default router
