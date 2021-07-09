@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 
 class Database {
 
-	public init = async () => {
+	public init = async (): Promise<void> => {
 
 		try {
 

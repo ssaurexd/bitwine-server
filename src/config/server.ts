@@ -11,7 +11,7 @@ class Server {
 	private app = express()
 	private db = new Database()
 
-	public init = () => {
+	public init = (): void => {
 
 		this.db.init()
 		this.middlewares()
@@ -23,6 +23,7 @@ class Server {
 		this.app.use( express.static('public') )
 		this.initCors()
 		/* habilitar el body */
+		this.app.use( express.json() )
 		this.app.use( express.urlencoded({ extended: true }) )
 		this.initCookieSession()
 		this.initRoutes()
@@ -33,7 +34,7 @@ class Server {
 	private initCors = () => {
 
 		this.app.use( cors({
-			origin: 'http://localhost:3001',
+			origin: 'http://localhost:3000',
 			optionsSuccessStatus: 200,
 			credentials: true
 		}))

@@ -4,9 +4,10 @@
   "description": "api para generar blogs de manera rapida",
   "main": "index.ts",
   "scripts": {
-    "eslint": "eslint src/**",
+    "eslint": "eslint src/**/*.ts",
     "clean": "rimraf dist/*",
-    "dev": "nodemon --watch src  --ext ts --exec ts-node --ignore '*.test.ts' src/index.ts"
+    "dev": "nodemon --watch src  --ext ts --exec ts-node --ignore '*.test.ts' src/index.ts",
+    "build": "tsc"
   },
   "keywords": [
     "bitblog",

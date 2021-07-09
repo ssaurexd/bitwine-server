@@ -1,15 +1,16 @@
-import { Request } from 'express'
 import jwt from 'jsonwebtoken'
 
+import { IUser } from '../models/Users/interfaces'
 
-export const getUserID = ( token: string ) => {
+
+export const getUserID = ( token: string ): any => {
 
 	const { _id }: any = jwt.verify( token, process.env.JWT_SEED )
 
 	return _id
 }
 
-export const setToken = ( _id: string, extraData?: object ): string => {
+export const setUserToken = ( _id: string, extraData?: IUser ): string => {
 
 	const token = jwt.sign({
 		_id,

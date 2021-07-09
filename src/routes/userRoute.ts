@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, RequestHandler } from 'express'
 import { body } from 'express-validator'
 
 import {
@@ -20,7 +20,6 @@ userRouter.post( '/signup',
 	],
 	signUp
 )
-
 userRouter.post( '/login',
 	[
 		body('email').not().isEmpty().withMessage('El email es requerido.').isEmail().withMessage('Introduce un email valido'),

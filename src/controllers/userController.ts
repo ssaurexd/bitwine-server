@@ -2,7 +2,7 @@ import { RequestHandler } from 'express'
 
 import User from '../models/Users'
 import { IUser } from '../models/Users/interfaces'
-import { setToken } from '../helpers/jwt'
+import { setUserToken } from '../helpers/jwt'
 
 
 export const signUp: RequestHandler = async ( req, res ) => {
@@ -34,13 +34,12 @@ export const signUp: RequestHandler = async ( req, res ) => {
 		})
 	}
 
-	const token = setToken( user._id )
+	const token = setUserToken( user._id )
 
 	req.session.access_token = token
 	return res.status( 200 ).json({
 		ok: true,
-		user,
-		token
+		user
 	})
 }
 
@@ -66,13 +65,12 @@ export const logIn: RequestHandler = async ( req, res ) => {
 			msg: 'Contraseña incorrecta'
 		})
 	}
-	
-	const token = setToken( user._id )
+
+	const token = setUserToken( user._id )
 
 	req.session.access_token = token
 	return res.status( 200 ).json({
 		ok: true,
-		user,
-		token
+		user
 	})
 }
