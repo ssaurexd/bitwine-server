@@ -81,7 +81,6 @@ export const logIn: RequestHandler = async ( req, res ) => {
 export const refreshToken: RequestHandler = async ( req, res ) => {
 
 	const { rememberMe } = req.body
-    console.log("🚀 ~ file: userController.ts ~ line 84 ~ constrefreshToken:RequestHandler= ~ rememberMe", req.body)
 	const oldToken = req.session.access_token
 	const uid = getUserID( oldToken )
 	const user = await User.findOne({ _id: uid })
