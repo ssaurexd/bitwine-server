@@ -1,8 +1,9 @@
 import { RequestHandler } from 'express'
+import jwt from 'jsonwebtoken'
 
 import User from '../models/Users'
 import { IUser } from '../models/Users/interfaces'
-import { setUserToken } from '../helpers/jwt'
+import { setUserToken, getUserID } from '../helpers/jwt'
 
 
 export const signUp: RequestHandler = async ( req, res ) => {
@@ -12,7 +13,7 @@ export const signUp: RequestHandler = async ( req, res ) => {
 
 	if( user ) {
 		
-		return res.status( 401 ).json({
+		return res.status( 400 ).json({
 			ok: false,
 			msg: 'Ya hay un usuario registrado con esa cuenta.'
 		})
@@ -37,6 +38,7 @@ export const signUp: RequestHandler = async ( req, res ) => {
 	const token = setUserToken( user._id )
 
 	req.session.access_token = token
+
 	return res.status( 200 ).json({
 		ok: true,
 		user
@@ -50,7 +52,7 @@ export const logIn: RequestHandler = async ( req, res ) => {
 
 	if( !user ) {
 		
-		return res.status( 401 ).json({
+		return res.status( 400 ).json({
 			ok: false,
 			msg: 'No hay un usuario registrado con esa cuenta.'
 		})
@@ -60,7 +62,7 @@ export const logIn: RequestHandler = async ( req, res ) => {
 
 	if( !isCorrectPassword ) {
 
-		return res.status( 401 ).json({
+		return res.status( 400 ).json({
 			ok: false,
 			msg: 'Contraseña incorrecta'
 		})
@@ -69,6 +71,56 @@ export const logIn: RequestHandler = async ( req, res ) => {
 	const token = setUserToken( user._id )
 
 	req.session.access_token = token
+
+	return res.status( 200 ).json({
+		ok: true,
+		user
+	})
+}
+
+export const refreshToken: RequestHandler = async ( req, res ) => {
+
+	const { rememberMe } = req.body
+    console.log("🚀 ~ file: userController.ts ~ line 84 ~ constrefreshToken:RequestHandler= ~ rememberMe", req.body)
+	const oldToken = req.session.access_token
+	const uid = getUserID( oldToken )
+	const user = await User.findOne({ _id: uid })
+
+	try {
+	
+		jwt.verify( oldToken, process.env.JWT_SEED )
+	} catch ( error ) {
+		
+		if( rememberMe && error.name === 'TokenExpiredError') {
+			
+			const token = setUserToken( uid )
+
+			req.session.access_token = token
+
+			return res.status( 200 ).json({
+				ok: true,
+				user
+			})
+		} else if( rememberMe === false && error.name === 'TokenExpiredError' ) {
+
+			return res.status( 401 ).json({
+				ok: false,
+				expired: true,
+				msg: 'La sessión expiró.'
+			})
+		} else {
+
+			console.log("🚀 ~ file: auth.ts ~ line 25 ~ constisAuthenticated:RequestHandler= ~ error", error)
+			return res.status( 501 ).json({
+				ok: false,
+				msg: 'Oops! Algo salio mal.'
+			})
+		}
+
+	}
+
+	req.session.access_token = oldToken
+
 	return res.status( 200 ).json({
 		ok: true,
 		user
