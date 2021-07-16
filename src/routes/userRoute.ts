@@ -4,7 +4,8 @@ import { body } from 'express-validator'
 import {
 	signUp,
 	logIn,
-	refreshToken
+	refreshToken,
+	logOut
 } from '../controllers/userController'
 import { validateBody } from '../middlewares/body'
 import { isAuthenticated } from '../middlewares/auth'
@@ -40,5 +41,7 @@ userRouter.post( '/refresh-token',
 	],
 	refreshToken
 )
+
+userRouter.post( '/logout', logOut )
 
 export default userRouter

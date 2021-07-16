@@ -125,3 +125,12 @@ export const refreshToken: RequestHandler = async ( req, res ) => {
 		user
 	})
 }
+
+export const logOut: RequestHandler = ( req, res ) => {
+
+	req.session = null
+
+	return res.status( 200 ).json({
+		ok: true
+	})
+}
