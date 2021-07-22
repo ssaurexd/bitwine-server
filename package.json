@@ -1,5 +1,5 @@
 {
-  "name": "bitblog",
+  "name": "bitwine",
   "version": "1.0.0",
   "description": "api para generar blogs de manera rapida",
   "main": "index.ts",
