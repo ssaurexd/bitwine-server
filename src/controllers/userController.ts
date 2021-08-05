@@ -28,10 +28,10 @@ export const signUp: RequestHandler = async ( req, res ) => {
 		await user.save()	
 	} catch ( error ) {
 
-        console.log("🚀 ~ file: userController.ts ~ line 29 ~ constsignUp:RequestHandler= ~ error", error)
+        console.log("🚀 ~ file: userController.ts ~ line 31 ~ constsignUp:RequestHandler= ~ error", error)
 		return res.status( 501 ).json({
 			ok: false,
-			msg: 'Oops! Parece que algo salio mal.'
+			msg: 'Oops! Algo salio mal.'
 		})
 	}
 
@@ -74,19 +74,34 @@ export const logIn: RequestHandler = async ( req, res ) => {
 
 	return res.status( 200 ).json({
 		ok: true,
-		user
+		user,
+		token
 	})
 }
 
 export const refreshToken: RequestHandler = async ( req, res ) => {
 
 	const { rememberMe } = req.body
-	const oldToken = req.session.access_token
-	const uid = getUserID( oldToken )
-	const user = await User.findOne({ _id: uid })
+	let oldToken = req.session.access_token
+	let uid: any 
 
-	try {
+	if( rememberMe ) oldToken = req.headers['x-token']
 	
+	try {
+		
+		uid = getUserID( oldToken )
+	} catch ( error ) {
+
+		return res.status( 501 ).json({
+			ok: false,
+			msg: 'Oops! Algo salio mal.'
+		})
+	}
+
+	const user = await User.findOne({ _id: uid })
+	
+	try {
+		
 		jwt.verify( oldToken, process.env.JWT_SEED )
 	} catch ( error ) {
 		
@@ -98,7 +113,8 @@ export const refreshToken: RequestHandler = async ( req, res ) => {
 
 			return res.status( 200 ).json({
 				ok: true,
-				user
+				user,
+				token
 			})
 		} else if( rememberMe === false && error.name === 'TokenExpiredError' ) {
 
@@ -109,20 +125,20 @@ export const refreshToken: RequestHandler = async ( req, res ) => {
 			})
 		} else {
 
-			console.log("🚀 ~ file: auth.ts ~ line 25 ~ constisAuthenticated:RequestHandler= ~ error", error)
+			console.log("🚀 ~ file: userController.ts ~ line 128 ~ constrefreshToken:RequestHandler= ~ error", error)
 			return res.status( 501 ).json({
 				ok: false,
 				msg: 'Oops! Algo salio mal.'
 			})
 		}
-
 	}
 
 	req.session.access_token = oldToken
 
 	return res.status( 200 ).json({
 		ok: true,
-		user
+		user,
+		token: oldToken
 	})
 }
 

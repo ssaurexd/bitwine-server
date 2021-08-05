@@ -7,7 +7,12 @@ import { getUserID } from '../helpers/jwt'
 
 export const isAuthenticated: RequestHandler = async ( req, res, next ) => {
 
-	const token = req.session.access_token
+	let token = req.session.access_token
+	
+	if( !token ) {
+		
+		token = req.headers['x-token']
+	}
 	
 	if( !token ) {
 		
@@ -35,7 +40,11 @@ export const isAuthenticated: RequestHandler = async ( req, res, next ) => {
 
 export const isAuthenticatedAndAdmin: RequestHandler = async ( req, res, next ) => {
 
-	const token = req.session.access_token
+	let token = req.session.access_token
+	
+	if( !token ) {
+		token = req.headers['x-token']
+	}
 	
 	if( !token ) {
 		
