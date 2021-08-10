@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express'
+import { Field } from 'multer'
 
 import { IProduct } from '../models/Products/interfaces'
 import Product from '../models/Products'
@@ -44,6 +45,29 @@ export const createProduct: RequestHandler = async ( req, res ) => {
 		return res.status( 500 ).json({
 			ok: false,
 			msg: 'Oops! Something went wrong'
+		})
+	}
+}
+
+export const uploadProductImages: RequestHandler = async ( req, res, next  ) => {
+	
+	if( !req.files ) {
+		
+		return res.status( 400 ).json({
+			ok: false,
+			msg: 'Oops! Algo salio mal o faltan las imagenes'
+		})
+	} else {
+
+		req.body = req.files
+		const { images, image } = req.body
+		const imagesPath = images.map(( item: any ) => item.path.replace('public/', '') )
+		const imagePath = image[0].path.replace('public/', '')
+
+		return res.status( 201 ).json({
+			ok: true,
+			imagePath,
+			imagesPath
 		})
 	}
 }

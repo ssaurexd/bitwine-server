@@ -1,6 +1,8 @@
 import express from 'express'
 import cookieSession from 'cookie-session'
 import cors from 'cors'
+import multer from 'multer'
+import path from 'path'
 
 import Database from './database'
 import routes from '../routes'
@@ -10,6 +12,7 @@ class Server {
 
 	private app = express()
 	private db = new Database()
+	private upload = multer()
 
 	public init = (): void => {
 
@@ -20,11 +23,12 @@ class Server {
 	private middlewares = () => {
 
 		/* directorio publico */
-		this.app.use( express.static('public') )
+		this.app.use( express.static( path.resolve('public') ) )
 		this.initCors()
 		/* habilitar el body */
-		this.app.use( express.json() )
 		this.app.use( express.urlencoded({ extended: true }) )
+		this.app.use( express.json() )
+
 		this.initCookieSession()
 		this.initRoutes()
 		this.initServer()

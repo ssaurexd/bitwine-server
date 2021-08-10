@@ -25,3 +25,23 @@ export const createCategory: RequestHandler = async ( req, res ) => {
 		})
 	}
 }
+
+export const listCategories: RequestHandler = async ( req, res ) => {
+	
+	try {
+		
+		const categories = await Category.find({})
+
+		return res.status( 200 ).json({
+			ok: true,
+			categories
+		})
+	} catch ( error ) {
+
+        console.log("🚀 ~ file: categoryController.ts ~ line 41 ~ constlistCategories:RequestHandler= ~ error", error)
+		return res.status( 500 ).json({
+			ok: false,
+			msg: 'Oops! Something went wrong'
+		})
+	}
+}

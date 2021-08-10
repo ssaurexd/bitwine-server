@@ -4,7 +4,7 @@ import { body } from 'express-validator'
 import { isAuthenticatedAndAdmin } from '../middlewares/auth'
 import { validateBody } from '../middlewares/body'
 import { 
-	createCategory 
+	createCategory, listCategories 
 } from '../controllers/categoryController'
 
 
@@ -17,6 +17,9 @@ categoryRouter.post( '/',
 		validateBody
 	],
 	createCategory
+)
+categoryRouter.get( '/',
+	listCategories
 )
 
 export default categoryRouter
