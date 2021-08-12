@@ -57,6 +57,11 @@ export const productSchema = new Schema<IProduct, IProductModel>({
 	onStock: {
 		type: Number,
 		default: 0
+	},
+	slug: {
+		type: String,
+		required: true,
+		unique: true
 	}
 }, {
 	timestamps: true

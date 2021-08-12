@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { body } from 'express-validator'
+import { body,  } from 'express-validator'
 
 import { validateBody } from '../middlewares/body'
 import { isAuthenticatedAndAdmin } from '../middlewares/auth'
@@ -7,7 +7,8 @@ import {
 	getFlashSales,
 	createProduct, 
 	listProducts,
-	uploadProductImages
+	uploadProductImages,
+	listProductsByCategory
 } from '../controllers/productController'
 import { productImageMulter } from '../config/multer'
 
@@ -33,7 +34,9 @@ productRouter.route( '/' )
 	.get(
 		listProducts
 	)
-
+productRouter.get( '/by-category/:category',
+	listProductsByCategory
+)
 productRouter.post( '/upload-product-images', 
 	isAuthenticatedAndAdmin,
 	productImageMulter.fields([

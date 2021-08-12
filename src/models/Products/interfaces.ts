@@ -18,8 +18,9 @@ export interface IProduct {
 	image: string,
 	rate?: IRate[],
 	onStock: number,
+	slug: string,
 }
 
 export interface IProductModel extends Model<IProduct> {
-	getProductsByCategory: ( category: string, limit?: number ) => Promise<IProduct[]>
+	getProductsByCategory: ( query: any, category: string, limit?: number, page?: number ) => Promise<{ products: IProduct[], total: number}>
 }
