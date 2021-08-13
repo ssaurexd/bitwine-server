@@ -23,7 +23,7 @@ export const getProductsByCategory = async ( query: any, category: string, limit
 		.find({ 
 			...query, 
 			categories: { $in: [ categoryData._id ] }
-		}).count()
+		}).countDocuments()
 	
 	return {
 		products,

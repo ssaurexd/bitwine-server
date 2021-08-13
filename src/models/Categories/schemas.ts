@@ -19,7 +19,7 @@ export const categorySchema = new Schema<ICategory>({
 
 categorySchema.methods.toJSON = function () {
 
-	const { __v, createdAt, updatedAt,  ...category } = this.toObject()
+	const { __v, updatedAt, ...category } = this.toObject()
 
 	return category
 }

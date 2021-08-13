@@ -1,9 +1,8 @@
-import { Model, Types } from 'mongoose'
+import { Model, Document } from 'mongoose'
 
 
 export type Role = 'user' | 'admin'
-export interface IUser {
-	_id?: Types.ObjectId,
+export interface IUser extends Document {
 	email: string,
 	password: string,
 	name: string,
