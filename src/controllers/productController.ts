@@ -5,6 +5,11 @@ import { toSlug } from '../helpers/converToSlug'
 import Product from '../models/Products'
 
 
+interface IListQuery {
+	limitQuery: string,
+	pageQuery: string
+}
+
 export const getFlashSales: RequestHandler = async ( req, res ) => {
 
 	try {
@@ -73,11 +78,6 @@ export const uploadProductImages: RequestHandler = async ( req, res, next  ) => 
 			imagesPath
 		})
 	}
-}
-
-interface IListQuery {
-	limitQuery: string,
-	pageQuery: string
 }
 
 export const listProducts: RequestHandler<{}, {}, {}, IListQuery> = async ( req, res ) => {

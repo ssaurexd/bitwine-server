@@ -16,6 +16,10 @@ export const bannerSchema = new Schema<IBanner, IBannerModel>({
 		type: String,
 		required: true
 	},
+	productImg: {
+		type: String,
+		required: true
+	},
 	isActive: {
 		type: Boolean,
 		default: true

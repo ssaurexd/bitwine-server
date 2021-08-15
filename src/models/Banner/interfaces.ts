@@ -1,12 +1,14 @@
 import { Model, Document } from 'mongoose'
 
 
-export interface IBanner {
+export interface IBannerForHome extends IBanner {
+	productImg: string
+}
+export interface IBanner extends Document {
 	title: string
 	description: string
 	productSlug: string,
 	isActive: boolean
 }
 export interface IBannerModel extends Model<IBanner> {
-
 }
