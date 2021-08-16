@@ -8,7 +8,8 @@ import {
 	createProduct, 
 	listProducts,
 	uploadProductImages,
-	listProductsByCategory
+	listProductsByCategory,
+	getProductBySlug
 } from '../controllers/productController'
 import { productImageMulter } from '../config/multer'
 
@@ -36,6 +37,9 @@ productRouter.route( '/' )
 	)
 productRouter.get( '/by-category/:category',
 	listProductsByCategory
+)
+productRouter.get( '/by-slug/:slug',
+	getProductBySlug
 )
 productRouter.post( '/upload-product-images', 
 	isAuthenticatedAndAdmin,

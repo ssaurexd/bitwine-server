@@ -162,3 +162,87 @@ export const listProductsByCategory: RequestHandler<{ category: string }, {}, {}
 		})
 	}
 }
+
+export const getProductBySlug: RequestHandler = async ( req, res ) => {
+
+	const { slug } = req.params
+
+	try {
+		
+		const product = await Product.findOne({ slug }).populate({ path: 'categories',	select: 'name value' })
+		
+		if( product ) {
+
+			const aggregate = [
+				{ 
+					$match: {
+						$and: [
+							{
+								_id: { $ne: product._id }
+							},
+							{
+								categories: { $in: [ product.categories ] }
+							}
+						]
+					}
+				},
+				{ 
+					$lookup : {
+						from: 'categories',
+						localField: 'categories',
+						foreignField: '_id',
+						as: 'categoriesPop'
+					}
+
+				},
+				{
+					$project: {
+						name: 1,
+						description: 1,
+						price: 1,
+						priceWithDiscount: 1,
+						discount: 1,
+						categories: '$categoriesPop',
+						images: 1,
+						image: 1,
+						rate: 1,
+						onStock: 1,
+						slug: 1,
+					}
+				},
+				{
+					$project: {
+						categories: {
+							createdAt: 0,
+							updatedAt: 0,
+							__v: 0
+						}
+					}
+				},
+				{ $sort: { createAt: -1 } },
+				{ $limit: 4 }
+			]
+			const related = await Product.aggregate( aggregate )
+
+			return res.status( 200 ).json({
+				ok: true,
+				product,
+				related
+			})
+		} else {
+
+			return res.status( 400 ).json({
+				ok: false,
+				msg: 'No existe el producto'
+			})
+		}
+	} catch ( error ) {
+		
+        console.log("🚀 ~ file: productController.ts ~ line 174 ~ constgetProductBySlug:RequestHandler= ~ error", error)
+		return res.status( 500 ).json({
+			ok: false,
+			msg: 'Oops! Something went wrong'
+		})
+	}
+	
+}
