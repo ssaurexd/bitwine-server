@@ -80,6 +80,26 @@ export const uploadProductImages: RequestHandler = async ( req, res, next  ) => 
 	}
 }
 
+export const listAllProducts: RequestHandler = async ( req, res ) => {
+	
+	try {
+		
+		const products = await Product.find({}).populate({ path: 'categories', select: 'name value' })
+
+		return res.status( 200 ).json({
+			ok: true,
+			products,
+		})
+	} catch ( error ) {
+
+		console.log("🚀 ~ file: productController.ts ~ line 96 ~ constlistAllProducts:RequestHandler= ~ error", error)
+		return res.status( 500 ).json({
+			ok: false,
+			msg: 'Oops! Something went wrong'
+		})
+	}
+}
+
 export const listProducts: RequestHandler<{}, {}, {}, IListQuery> = async ( req, res ) => {
 
 	const { limitQuery = '12', pageQuery = '0' } = req.query

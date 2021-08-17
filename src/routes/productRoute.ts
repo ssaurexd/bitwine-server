@@ -9,7 +9,8 @@ import {
 	listProducts,
 	uploadProductImages,
 	listProductsByCategory,
-	getProductBySlug
+	getProductBySlug,
+	listAllProducts
 } from '../controllers/productController'
 import { productImageMulter } from '../config/multer'
 
@@ -37,6 +38,10 @@ productRouter.route( '/' )
 	)
 productRouter.get( '/by-category/:category',
 	listProductsByCategory
+)
+productRouter.get( '/list-all',
+	isAuthenticatedAndAdmin,
+	listAllProducts
 )
 productRouter.get( '/by-slug/:slug',
 	getProductBySlug
