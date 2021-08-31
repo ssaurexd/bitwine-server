@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express'
-import { Types } from 'mongoose'
 import Store from '../models/Store'
 import { IStore, IStoreProduct, IStoreType } from '../models/Store/interfaces'
 import { getUserID } from '../helpers/jwt'
