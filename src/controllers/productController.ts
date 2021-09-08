@@ -266,3 +266,25 @@ export const getProductBySlug: RequestHandler = async ( req, res ) => {
 	}
 	
 }
+
+export const getProductStockById: RequestHandler = async ( req, res ) => {
+
+	const { productId } = req.body
+	
+	try {
+		
+		const product = await Product.findById( productId )
+
+		return res.status( 200 ).json({
+			ok: true,
+			onStock: product.onStock
+		})
+	} catch ( error ) {
+		
+        console.log("🚀 ~ file: productController.ts ~ line 279 ~ constgetProductStockById:RequestHandler= ~ error", error)
+		return res.status( 500 ).json({
+			ok: false,
+			msg: 'Oops! Something went wrong'
+		})
+	}
+}

@@ -10,7 +10,8 @@ import {
 	uploadProductImages,
 	listProductsByCategory,
 	getProductBySlug,
-	listAllProducts
+	listAllProducts,
+	getProductStockById
 } from '../controllers/productController'
 import { productImageMulter } from '../config/multer'
 
@@ -56,6 +57,13 @@ productRouter.post( '/upload-product-images',
 )
 productRouter.get( '/flash-sales', 
 	getFlashSales
+)
+productRouter.post( '/product-stock', 
+	[
+		body('productId').not().isEmpty().withMessage('El id del producto es requerido'),
+		validateBody
+	],
+	getProductStockById
 )
 
 export default productRouter
