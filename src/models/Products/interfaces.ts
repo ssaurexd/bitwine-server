@@ -13,7 +13,7 @@ export interface IProduct {
 	price: number,
 	priceWithDiscount: number,
 	discount?: number,
-	categories: Types.ObjectId[],
+	categories: Types.ObjectId,
 	images?: string[],
 	image: string,
 	rate?: IRate[],

@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express'
+import { Types } from 'mongoose'
 import Store from '../models/Store'
 import { IStore, IStoreProduct, IStoreType } from '../models/Store/interfaces'
 import { getUserID } from '../helpers/jwt'
@@ -53,7 +54,7 @@ export const createStoreForUser: RequestHandler = async ( req, res ) => {
 		} else {
 
 			const data: IStore = {
-				uid,
+				uid: new Types.ObjectId( uid ),
 				type: typeT,
 				products: [ product ]
 			}

@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose'
+import { Schema, Types } from 'mongoose'
 
 import { IProduct, IProductModel } from './interfaces'
 import { getProductsByCategory } from './methods'
@@ -39,9 +39,9 @@ export const productSchema = new Schema<IProduct, IProductModel>({
 		default: 0
 	},
 	categories: {
-		type: [ Schema.Types.ObjectId ],
+		type: [ Types.ObjectId ],
 		required: true,
-		ref: Category
+		ref: Category,
 	},
 	images: {
 		type: [ String ]

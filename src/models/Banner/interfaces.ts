@@ -8,7 +8,8 @@ export interface IBanner extends Document {
 	title: string
 	description: string
 	productSlug: string,
-	isActive: boolean
+	isActive: boolean,
+	productImg: string
 }
 export interface IBannerModel extends Model<IBanner> {
 }

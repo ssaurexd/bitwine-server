@@ -2,7 +2,7 @@ import { Model, Types } from 'mongoose'
 
 export type IStoreType = 'shopCart' | 'wishList'
 export interface IStore{
-	uid: string,
+	uid: Types.ObjectId,
 	type: IStoreType,
 	products: IStoreProduct[]	
 }
