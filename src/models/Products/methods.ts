@@ -19,6 +19,9 @@ export const getProductsByCategory = async ( query: any, category: string, limit
 			path: 'categories',
 			select: 'name value'
 		})
+		.sort({
+			createdAt: -1
+		})
 	const total = await Product
 		.find({ 
 			...query, 

@@ -119,6 +119,9 @@ export const listProducts: RequestHandler<{}, {}, {}, IListQuery> = async ( req,
 				path: 'categories',
 				select: 'name value' 
 			})
+			.sort({
+				createdAt: -1
+			})
 		const total = await Product.find( query ).estimatedDocumentCount()
 		const canNext: boolean = products.length < limit || products.length === 0 ? false : true
 		const canPrevious: boolean = page <= 1 ? false : true
