@@ -1,11 +1,55 @@
 import { Schema } from 'mongoose'
 
-import { IUser, IUserModel } from './interfaces'
+import { IUser, IUserAddress, IUserAddressModel, IUserModel } from './interfaces'
 import {
 	hashPassword,
 	comparePasswords
 } from './methods'
 
+export const userAddressSchema = new Schema<IUserAddress, IUserAddressModel>({
+	delegation: {
+		required: true,
+		type: String
+	},
+	name: {
+		required: true,
+		type: String
+	},
+	lastName: {
+		required: false,
+		type: String
+	},
+	email: {
+		required: true,
+		type: String
+	},
+	houseNumber: {
+		required: true,
+		type: String
+	},
+	phone: {
+		required: true,
+		type: String
+	},
+	state: {
+		required: true,
+		type: String
+	},
+	street: {
+		required: true,
+		type: String
+	},
+	suburb: {
+		required: true,
+		type: String
+	},
+	zip: {
+		required: true,
+		type: String
+	}
+}, {
+	timestamps: true
+})
 
 export const userSchema = new Schema<IUser, IUserModel>({
 	email: {
@@ -31,6 +75,10 @@ export const userSchema = new Schema<IUser, IUserModel>({
 		type: String,
 		default: 'user',
 		enum: ['user', 'admin']
+	},
+	address: {
+		type: [ userAddressSchema ],
+		required: false
 	}
 }, {
 	timestamps: true
