@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express'
+import { RequestHandler, RequestParamHandler, Response } from 'express'
 
 import { IProduct } from '../models/Products/interfaces'
 import { toSlug } from '../helpers/converToSlug'
@@ -285,6 +285,72 @@ export const getProductStockById: RequestHandler = async ( req, res ) => {
 	} catch ( error ) {
 		
         console.log("🚀 ~ file: productController.ts ~ line 279 ~ constgetProductStockById:RequestHandler= ~ error", error)
+		return res.status( 500 ).json({
+			ok: false,
+			msg: 'Oops! Something went wrong'
+		})
+	}
+}
+
+interface IGetProductsByQueryBody {
+	query: string
+}
+export const getProductsByQuery: RequestHandler<RequestParamHandler, any, IGetProductsByQueryBody> = async ( req, res ) => {
+
+	const { query } = req.body
+
+	try {
+		
+		const products = await Product.aggregate([
+			{
+				$match: {  
+					name: { $regex: query, $options: 'i' }
+				} 
+			},
+			{ 
+				$lookup : {
+					from: 'categories',
+					localField: 'categories',
+					foreignField: '_id',
+					as: 'categoriesPop'
+				}
+
+			},
+			{
+				$project: {
+					name: 1,
+					description: 1,
+					price: 1,
+					priceWithDiscount: 1,
+					discount: 1,
+					categories: '$categoriesPop',
+					images: 1,
+					image: 1,
+					rate: 1,
+					onStock: 1,
+					slug: 1,
+				}
+			},
+			{
+				$project: {
+					categories: {
+						createdAt: 0,
+						updatedAt: 0,
+						__v: 0
+					}
+				}
+			},
+			{ $sort: { createAt: -1 } },
+			{ $limit: 6 }
+		])
+
+		return res.status( 200 ).json({
+			ok: true,
+			products
+		})
+	} catch ( error ) {
+
+        console.log("🚀 ~ file: productController.ts ~ line 305 ~ constgetProductsByQuery:RequestHandler<void,void,IGetProductsByQueryBody>= ~ error", error)
 		return res.status( 500 ).json({
 			ok: false,
 			msg: 'Oops! Something went wrong'

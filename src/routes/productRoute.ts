@@ -11,7 +11,8 @@ import {
 	listProductsByCategory,
 	getProductBySlug,
 	listAllProducts,
-	getProductStockById
+	getProductStockById,
+	getProductsByQuery
 } from '../controllers/productController'
 import { productImageMulter } from '../config/multer'
 
@@ -64,6 +65,13 @@ productRouter.post( '/product-stock',
 		validateBody
 	],
 	getProductStockById
+)
+productRouter.post( '/search-by-query', 
+	[
+		body('query').not().isEmpty().withMessage('El query es requerido'),
+		validateBody
+	],
+	getProductsByQuery
 )
 
 export default productRouter
