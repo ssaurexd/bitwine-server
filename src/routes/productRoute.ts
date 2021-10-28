@@ -12,7 +12,8 @@ import {
 	getProductBySlug,
 	listAllProducts,
 	getProductStockById,
-	getProductsByQuery
+	getProductsByQuery,
+	listProductsForMarket
 } from '../controllers/productController'
 import { productImageMulter } from '../config/multer'
 
@@ -72,6 +73,10 @@ productRouter.post( '/search-by-query',
 		validateBody
 	],
 	getProductsByQuery
+)
+
+productRouter.post( '/list-products-for-market', 
+	listProductsForMarket
 )
 
 export default productRouter

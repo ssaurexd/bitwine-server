@@ -148,6 +148,186 @@ export const listProducts: RequestHandler<{}, {}, {}, IListQuery> = async ( req,
 	}
 }
 
+interface IReqBodyListProductsForMarket {
+	categories: string[],
+	query: string,
+	rate: number,
+	rangePrice: number[],
+	limitQuery: number,
+	pageQuery: number
+}
+export const listProductsForMarket: RequestHandler<any, any, IReqBodyListProductsForMarket> = async ( req, res ) => {
+
+	const { 
+		limitQuery = 12, 
+		pageQuery = 0,
+		categories = [],
+		query = '',
+		rate = 0,
+		rangePrice = [ 0, 999999 ]
+	} = req.body
+	const limit = limitQuery
+	const page = pageQuery
+	const skip = page * limit
+	const aggregate = [
+		{
+			$match: {
+					name: { $regex: query, $options: 'i' },
+					price: { $gte: rangePrice[0], $lt: rangePrice[1] }
+					
+					/* rate: { $gte: rated }
+						categories: { $in: [ ...categories ] }
+					*/
+			} 
+		},
+		{ 
+			$lookup : {
+				from: 'categories',
+				localField: 'categories',
+				foreignField: '_id',
+				as: 'categoriesPop'
+			}
+
+		},
+		{
+			$project: {
+				name: 1,
+				description: 1,
+				price: 1,
+				priceWithDiscount: 1,
+				discount: 1,
+				categories: '$categoriesPop',
+				images: 1,
+				image: 1,
+				rate: {
+					$divide: [
+						{
+							$reduce: {
+								input: '$rate',
+								initialValue: 0,
+								in: {
+									$sum: [ '$$value', '$$this.value' ]
+								}
+							}
+						},
+						{
+							$cond: {
+								if: { $ne: [ { $size: '$rate' }, 0 ] },
+								then: { $size: '$rate' },
+								else: 1
+							}
+						}
+					]
+				},
+				onStock: 1,
+				slug: 1,
+			}
+		},
+		{
+			$match: {
+				rate: { $gte: rate }
+			}
+		},
+		{
+			$project: {
+				categories: {
+					createdAt: 0,
+					updatedAt: 0,
+					__v: 0
+				}
+			}
+		},
+		{ $sort: { createAt: -1 } },
+		{ $skip: skip },
+		{ $limit: limit }
+	]
+	const aggregateTotal = [
+		{
+			$match: {
+					name: { $regex: query, $options: 'i' },
+					price: { $gte: rangePrice[0], $lt: rangePrice[1] }
+			} 
+		},
+		{ 
+			$lookup : {
+				from: 'categories',
+				localField: 'categories',
+				foreignField: '_id',
+				as: 'categoriesPop'
+			}
+
+		},
+		{
+			$project: {
+				name: 1,
+				description: 1,
+				price: 1,
+				priceWithDiscount: 1,
+				discount: 1,
+				categories: '$categoriesPop',
+				images: 1,
+				image: 1,
+				rate: {
+					$divide: [
+						{
+							$reduce: {
+								input: '$rate',
+								initialValue: 0,
+								in: {
+									$sum: [ '$$value', '$$this.value' ]
+								}
+							}
+						},
+						{
+							$cond: {
+								if: { $ne: [ { $size: '$rate' }, 0 ] },
+								then: { $size: '$rate' },
+								else: 1
+							}
+						}
+					]
+				},
+				onStock: 1,
+				slug: 1,
+			}
+		},
+		{
+			$match: {
+				rate: { $gte: rate }
+			}
+		},
+		{ $count: 'total' }
+	]
+	
+	try {
+		
+		const products = await Product.aggregate( aggregate )
+		const total = await Product.aggregate( aggregateTotal )
+		const canNext: boolean = products.length < limit || products.length === 0 ? false : true
+		const canPrevious: boolean = page <= 1 ? false : true
+		const nextPage: number = canNext ? page + 1 : null
+		const previousPage: number =  page > 0 ? page - 1 : page 
+
+		return res.status( 200 ).json({
+			ok: true,
+			page,
+			next: canNext,
+			nextPage,
+			previous: canPrevious,
+			previousPage,
+			total: total[0]?.total ?? 0,
+			products,
+		})
+	} catch ( error ) {
+		
+    	console.log("🚀 ~ file: productController.ts ~ line 265 ~ constlistProductsForMarket:RequestHandler<any,any,IReqBodyListProductsForMarket>= ~ error", error)
+		return res.status( 500 ).json({
+			ok: false,
+			msg: 'Oops! Something went wrong'
+		})
+	}
+}
+
 export const listProductsByCategory: RequestHandler<{ category: string }, {}, {}, IListQuery> = async ( req, res ) => {
 	
 	const { limitQuery, pageQuery } = req.query
