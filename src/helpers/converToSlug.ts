@@ -3,7 +3,7 @@ import shortid from 'shortid'
 
 export const toSlug = ( text: string ): string => {
 
-	let textToSlug = text.concat( '-' + shortid.generate() )
+	const textToSlug = text.concat( '-' + shortid.generate() )
 	
 	return textToSlug
 				.toLowerCase()

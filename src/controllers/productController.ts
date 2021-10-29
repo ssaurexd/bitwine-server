@@ -1,4 +1,4 @@
-import { RequestHandler, RequestParamHandler, Response } from 'express'
+import { RequestHandler, RequestParamHandler } from 'express'
 
 import { IProduct } from '../models/Products/interfaces'
 import { toSlug } from '../helpers/converToSlug'
@@ -32,7 +32,7 @@ export const getFlashSales: RequestHandler = async ( req, res ) => {
 
 export const createProduct: RequestHandler = async ( req, res ) => {
 
-	let data: IProduct = req.body
+	const data: IProduct = req.body
 
 	try {
 
@@ -57,7 +57,7 @@ export const createProduct: RequestHandler = async ( req, res ) => {
 	}
 }
 
-export const uploadProductImages: RequestHandler = async ( req, res, next  ) => {
+export const uploadProductImages: RequestHandler = async ( req, res ) => {
 	
 	if( !req.files ) {
 		
@@ -100,7 +100,7 @@ export const listAllProducts: RequestHandler = async ( req, res ) => {
 	}
 }
 
-export const listProducts: RequestHandler<{}, {}, {}, IListQuery> = async ( req, res ) => {
+export const listProducts: RequestHandler<any, any, any, IListQuery> = async ( req, res ) => {
 
 	const { limitQuery = '12', pageQuery = '0' } = req.query
 	const limit = parseInt( limitQuery )
@@ -328,7 +328,7 @@ export const listProductsForMarket: RequestHandler<any, any, IReqBodyListProduct
 	}
 }
 
-export const listProductsByCategory: RequestHandler<{ category: string }, {}, {}, IListQuery> = async ( req, res ) => {
+export const listProductsByCategory: RequestHandler<{ category: string }, any, any, IListQuery> = async ( req, res ) => {
 	
 	const { limitQuery, pageQuery } = req.query
 	const { category } = req.params

@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express'
-import Product from '../models/Products'
 import Banner from '../models/Banner'
 
 
@@ -8,7 +7,7 @@ interface IListQuery {
 	pageQuery: string
 }
 
-export const getBanners: RequestHandler<{},{}, {}, IListQuery> = async ( req, res ) => {
+export const getBanners: RequestHandler<any, any, any, IListQuery> = async ( req, res ) => {
 	
 	const { limitQuery = '12', pageQuery = '0' } = req.query
 	const limit = parseInt( limitQuery )

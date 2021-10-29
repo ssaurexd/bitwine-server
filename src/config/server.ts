@@ -60,7 +60,7 @@ class Server {
 
 	private initServer = () => {
 
-		this.app.listen( process.env.PORT, () => {
+		this.app.listen( process.env.PORT || 3000, () => {
 
 			console.log(`Server ON --> ${ process.env.BASE_PATH }:${ process.env.PORT }`)
 		})
