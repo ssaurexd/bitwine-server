@@ -3,16 +3,11 @@ import mongoose from 'mongoose'
 
 class Database {
 
-	public init = async () => {
+	public init = async (): Promise<void> => {
 
 		try {
 
-			await mongoose.connect( process.env.MONGO_URL, { 
-				useNewUrlParser: true,
-				useUnifiedTopology: true,
-				useCreateIndex: true,
-				useFindAndModify: false
-			})
+			await mongoose.connect( process.env.MONGO_URL )
 			console.log( 'Database ON' )
 		} catch ( error ) {
 

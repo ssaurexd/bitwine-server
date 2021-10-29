@@ -1,0 +1,4 @@
+Cosas por hacer: 
+
+pensar un schema para el producto y crearlo,
+creado el schema, empezar a crear los endpoints
