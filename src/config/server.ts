@@ -38,9 +38,9 @@ class Server {
 	private initCors = () => {
 
 		this.app.use( cors({
-			origin: 'https://bitwine-client-ssaurexd-gmailcom.vercel.app/',
+			origin: 'https://bitwine-client-ssaurexd-gmailcom.vercel.app',
 			optionsSuccessStatus: 200,
-			credentials: true
+			credentials: true,
 		}))
 	}
 
