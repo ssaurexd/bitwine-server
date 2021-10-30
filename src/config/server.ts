@@ -37,8 +37,16 @@ class Server {
 	
 	private initCors = () => {
 
+		const whiteList: string[] = [
+			'https://bitwine-client.vercel.app',
+			'https://bitwine-server.herokuapp.com'
+		]
 		this.app.use( cors({
-			origin: 'https://bitwine-client.vercel.app',
+			origin: ( or, cb ) => {
+
+				if( whiteList.indexOf( or ) !== -1 ) cb( null, true )
+				else cb( new Error('Not allowed by cors') )
+			},
 			optionsSuccessStatus: 200,
 			credentials: true,
 		}))
@@ -50,7 +58,7 @@ class Server {
 			name: 'access_token',
 			keys: ['key1', 'key2'],
 			httpOnly: true,
-			path: '/'
+			sameSite: 'none'
 		}))
 	}
 
