@@ -58,7 +58,7 @@ class Server {
 			name: 'access_token',
 			keys: ['key1', 'key2'],
 			httpOnly: true,
-			domain: 'https://bitwine-client.vercel.app'
+			sameSite: 'lax'
 		}))
 	}
 
