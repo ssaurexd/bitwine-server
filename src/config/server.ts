@@ -49,7 +49,9 @@ class Server {
 		this.app.use( cookieSession({
 			name: 'access_token',
 			keys: ['key1', 'key2'],
-			httpOnly: true
+			httpOnly: true,
+			path: '/',
+			domain: 'http://localhost:3000/'
 		}))
 	}
 
