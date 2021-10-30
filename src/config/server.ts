@@ -42,9 +42,9 @@ class Server {
 			'https://bitwine-server.herokuapp.com'
 		]
 		this.app.use( cors({
-			origin: ( or, cb ) => {
+			origin: ( origin, cb ) => {
 
-				if( whiteList.indexOf( or ) !== -1 ) cb( null, true )
+				if( whiteList.indexOf( origin ) !== -1 || !origin ) cb( null, true )
 				else cb( new Error('Not allowed by cors') )
 			},
 			optionsSuccessStatus: 200,
