@@ -16,7 +16,7 @@ export const isAuthenticated: RequestHandler = async ( req, res, next ) => {
 	
 	if( !token ) {
 		
-		console.log("🚀 ~ file: auth.ts ~ line 8 ~ constisAuthenticated:RequestHandler --> No hay token" )
+		console.log("🚀 ~ file: auth.ts ~ line 8 ~ constisAuthenticated:RequestHandler --> No hay token", { token } )
 		return res.status( 401 ).json({
 			ok: false,
 			msg: 'Oops! Algo salio mal.'
