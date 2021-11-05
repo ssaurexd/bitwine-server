@@ -55,8 +55,7 @@ class Server {
 		this.app.use( cookieSession({
 			name: 'access_token',
 			keys: ['key1', 'key2'],
-			httpOnly: true,
-			domain: 'bitwine-server.herokuapp.com'
+			httpOnly: true
 		}))
 	}
 
