@@ -1,7 +1,6 @@
 import express from 'express'
 import cookieSession from 'cookie-session'
 import cors from 'cors'
-import multer from 'multer'
 import path from 'path'
 
 import Database from './database'
@@ -12,7 +11,6 @@ class Server {
 
 	private app = express()
 	private db = new Database()
-	private upload = multer()
 
 	public init = (): void => {
 
@@ -57,8 +55,7 @@ class Server {
 			name: 'access_token',
 			keys: ['key1', 'key2'],
 			httpOnly: true,
-			path: '/',
-			domain: 'bitwine-client.herokuapp.com'
+			domain: 'bitwine-server.herokuapp.com'
 		}))
 	}
 
