@@ -36,7 +36,8 @@ class Server {
 	private initCors = () => {
 
 		const whiteList: string[] = [
-			'https://bitwine-client.herokuapp.com'
+			'https://bitwine-client.herokuapp.com',
+			'http://localhost:3000'
 		]
 		this.app.use( cors({
 			origin: ( origin, cb ) => {
