@@ -9,7 +9,7 @@ import { compareIds } from '../helpers/helpers'
 export const getStoreByUID: RequestHandler = async ( req, res ) => {
 	
 	const { uid } = req.params
-	const token = req.session.access_token || req.headers['x-token']
+	const token = req.headers['x-token'] as string
 	
 	try {
 		
@@ -81,7 +81,7 @@ export const deleteItemById: RequestHandler = async ( req, res ) => {
 	
 	const { uid, type } = req.params
 	const { productId } = req.body
-	const token = req.session.access_token || req.headers['x-token']
+	const token = req.headers['x-token'] as string
 	const typeT = ( type as IStoreType )
 
 	try {
@@ -116,7 +116,7 @@ export const updateItemById: RequestHandler = async ( req, res ) => {
 	
 	const { uid, type } = req.params
 	const { productId, count } = req.body
-	const token = req.session.access_token || req.headers['x-token']
+	const token = req.headers['x-token'] as string
 	const typeT = ( type as IStoreType )
 
 	try {

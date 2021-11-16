@@ -69,7 +69,7 @@ export const userSchema = new Schema<IUser, IUserModel>({
 	}, 
 	lastName: {
 		type: String,
-		required: true
+		required: false
 	},
 	role: {
 		type: String,
