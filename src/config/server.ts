@@ -7,14 +7,12 @@ import Database from './database'
 import routes from '../routes'
 
 
-class Server {
+class Server extends Database {
 
 	private app = express()
-	private db = new Database()
 
-	public init = (): void => {
-
-		this.db.init()
+	public init = async () => {
+		await this.connectDB()
 		this.middlewares()
 	}
 
@@ -26,8 +24,7 @@ class Server {
 		/* habilitar el body */
 		this.app.use( express.urlencoded({ extended: true }) )
 		this.app.use( express.json() )
-
-		this.initCookieSession()
+		
 		this.initRoutes()
 		this.initServer()
 	}
@@ -47,15 +44,6 @@ class Server {
 			},
 			optionsSuccessStatus: 200,
 			credentials: true,
-		}))
-	}
-
-	private initCookieSession = () => {
-
-		this.app.use( cookieSession({
-			name: 'access_token',
-			keys: ['key1', 'key2'],
-			httpOnly: true
 		}))
 	}
 
