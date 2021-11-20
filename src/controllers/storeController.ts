@@ -15,8 +15,14 @@ export const getStoreByUID: RequestHandler = async ( req, res ) => {
 		
 		const uidLogged = getUserID( token )
 		
-		compareIds( uid, uidLogged )
+		if( !compareIds( uid, uidLogged ) ) {
 
+			return res.status( 401 ).json({
+				ok: false,
+				msg: 'Oops! Something went wrong.'
+			})
+		}
+ 
 		const shopCart = await Store.findOne({ uid, type: 'shopCart' })
 		const wishList = await Store.findOne({ uid, type: 'wishList' })
 
@@ -88,7 +94,13 @@ export const deleteItemById: RequestHandler = async ( req, res ) => {
 
 		const uidLogged = getUserID( token )
 
-		compareIds( uid, uidLogged )
+		if( !compareIds( uid, uidLogged ) ) {
+
+			return res.status( 401 ).json({
+				ok: false,
+				msg: 'Oops! Something went wrong.'
+			})
+		}
 
 		await Store.findOneAndUpdate({ uid, type: typeT }, {
 			$pull: {
@@ -123,7 +135,14 @@ export const updateItemById: RequestHandler = async ( req, res ) => {
 
 		const uidLogged = getUserID( token )
 
-		compareIds( uid, uidLogged )
+		if( !compareIds( uid, uidLogged ) ) {
+
+			return res.status( 401 ).json({
+				ok: false,
+				msg: 'Oops! Something went wrong.'
+			})
+		}
+		
 		await Store.findOneAndUpdate(
 			{ 
 				uid, 
