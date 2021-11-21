@@ -96,24 +96,14 @@ export const refreshToken: RequestHandler = async ( req, res ) => {
 	
 	try {
 		
-		jwt.verify( token, process.env.JWT_SEED )
+		jwt.verify( token, process.env.JWT_SEED, { ignoreExpiration: true } )
 	} catch ( error ) {
 		
-		if( error.name === 'TokenExpiredError' ) {
-
-			return res.status( 401 ).json({
-				ok: false,
-				expired: true,
-				msg: 'La sessión expiró.'
-			})
-		} else {
-
-			console.log("🚀 ~ file: userController.ts ~ line 128 ~ constrefreshToken:RequestHandler= ~ error", error)
-			return res.status( 501 ).json({
-				ok: false,
-				msg: 'Oops! Algo salio mal.'
-			})
-		}
+		console.log("🚀 ~ file: userController.ts ~ line 128 ~ constrefreshToken:RequestHandler= ~ error", error)
+		return res.status( 501 ).json({
+			ok: false,
+			msg: 'Oops! Algo salio mal.'
+		})
 	}
 
 	return res.status( 200 ).json({
