@@ -37,11 +37,10 @@ export const signUp: RequestHandler = async ( req, res ) => {
 
 	const token = setUserToken( user._id )
 
-	req.session.access_token = token
-
 	return res.status( 200 ).json({
 		ok: true,
-		user
+		user,
+		token
 	})
 }
 
@@ -70,8 +69,6 @@ export const logIn: RequestHandler = async ( req, res ) => {
 
 	const token = setUserToken( user._id )
 
-	req.session.access_token = token
-
 	return res.status( 200 ).json({
 		ok: true,
 		user,
@@ -81,15 +78,12 @@ export const logIn: RequestHandler = async ( req, res ) => {
 
 export const refreshToken: RequestHandler = async ( req, res ) => {
 
-	const { rememberMe } = req.body
-	let oldToken = req.session.access_token
+	const token = req.headers['x-token'] as string
 	let uid: any 
-
-	if( rememberMe ) oldToken = req.headers['x-token']
 	
 	try {
 		
-		uid = getUserID( oldToken )
+		uid = getUserID( token )
 	} catch ( error ) {
 
 		return res.status( 501 ).json({
@@ -102,49 +96,24 @@ export const refreshToken: RequestHandler = async ( req, res ) => {
 	
 	try {
 		
-		jwt.verify( oldToken, process.env.JWT_SEED )
+		jwt.verify( token, process.env.JWT_SEED, { ignoreExpiration: true } )
 	} catch ( error ) {
 		
-		if( rememberMe && error.name === 'TokenExpiredError') {
-			
-			const token = setUserToken( uid )
-
-			req.session.access_token = token
-
-			return res.status( 200 ).json({
-				ok: true,
-				user,
-				token
-			})
-		} else if( rememberMe === false && error.name === 'TokenExpiredError' ) {
-
-			return res.status( 401 ).json({
-				ok: false,
-				expired: true,
-				msg: 'La sessión expiró.'
-			})
-		} else {
-
-			console.log("🚀 ~ file: userController.ts ~ line 128 ~ constrefreshToken:RequestHandler= ~ error", error)
-			return res.status( 501 ).json({
-				ok: false,
-				msg: 'Oops! Algo salio mal.'
-			})
-		}
+		console.log("🚀 ~ file: userController.ts ~ line 128 ~ constrefreshToken:RequestHandler= ~ error", error)
+		return res.status( 501 ).json({
+			ok: false,
+			msg: 'Oops! Algo salio mal.'
+		})
 	}
-
-	req.session.access_token = oldToken
 
 	return res.status( 200 ).json({
 		ok: true,
 		user,
-		token: oldToken
+		token
 	})
 }
 
 export const logOut: RequestHandler = ( req, res ) => {
-
-	req.session = null
 
 	return res.status( 200 ).json({
 		ok: true
