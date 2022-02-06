@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express'
 import jwt from 'jsonwebtoken'
 
-import User from '../models/Users'
+import Users from '../models/Users'
 import { IUser, IUserAddress } from '../models/Users/interfaces'
 import { setUserToken, getUserID } from '../helpers/jwt'
 
@@ -9,7 +9,7 @@ import { setUserToken, getUserID } from '../helpers/jwt'
 export const signUp: RequestHandler = async ( req, res ) => {
 
 	const newUserData: IUser = req.body
-	let user = await User.findOne({ email: newUserData.email })
+	let user = await Users.findOne({ email: newUserData.email })
 
 	if( user ) {
 		
@@ -19,8 +19,8 @@ export const signUp: RequestHandler = async ( req, res ) => {
 		})
 	}
 
-	user = new User( newUserData )
-	const hashedPassword = User.hashPassword( user.password )
+	user = new Users( newUserData )
+	const hashedPassword = Users.hashPassword( user.password )
 
 	try {
 
@@ -47,7 +47,7 @@ export const signUp: RequestHandler = async ( req, res ) => {
 export const logIn: RequestHandler = async ( req, res ) => {
 
 	const { email, password }: IUser = req.body
-	const user = await User.findOne({ email })
+	const user = await Users.findOne({ email })
 
 	if( !user ) {
 		
@@ -57,7 +57,7 @@ export const logIn: RequestHandler = async ( req, res ) => {
 		})
 	}
 
-	const isCorrectPassword = User.comparePasswords( password, user.password )
+	const isCorrectPassword = Users.comparePasswords( password, user.password )
 
 	if( !isCorrectPassword ) {
 
@@ -92,7 +92,7 @@ export const refreshToken: RequestHandler = async ( req, res ) => {
 		})
 	}
 
-	const user = await User.findOne({ _id: uid })
+	const user = await Users.findOne({ _id: uid })
 	
 	try {
 		
@@ -150,7 +150,7 @@ export const addNewAddress: RequestHandler<{ uid: string }, any, IUserAddress> =
 			lastName
 		}
 		
-		await User.findByIdAndUpdate( uid, {
+		await Users.findByIdAndUpdate( uid, {
 			$addToSet: {
 				address: newAddress
 			}

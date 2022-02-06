@@ -172,3 +172,30 @@ export const updateItemById: RequestHandler = async ( req, res ) => {
 		})
 	}
 }
+
+export const resetStoreByUid: RequestHandler = async ( req, res ) => {
+	
+	const { type, uid } = req.params
+	const typeT = ( type as IStoreType )
+	
+	try {
+		
+		await Store.findOneAndUpdate({ uid, type: typeT }, {
+			$set: {
+				products: []
+			}
+		})
+
+		return res.status( 200 ).json({
+			ok: true,
+			msg: 'Store Actualizado'
+		})
+	} catch ( error ) {
+		
+        console.log("🚀 ~ file: storeController.ts ~ line 188 ~ constresetStoreByUid:RequestHandler<IParamsResetStoreByUid>= ~ error", error)
+		return res.status( 501 ).json({
+			ok: false,
+			msg: 'Oops! Algo salio mal.'
+		})
+	}
+}
