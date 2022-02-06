@@ -9,14 +9,20 @@ import { compareIds } from '../helpers/helpers'
 export const getStoreByUID: RequestHandler = async ( req, res ) => {
 	
 	const { uid } = req.params
-	const token = req.session.access_token
+	const token = req.headers['x-token'] as string
 	
 	try {
 		
 		const uidLogged = getUserID( token )
 		
-		compareIds( uid, uidLogged )
+		if( !compareIds( uid, uidLogged ) ) {
 
+			return res.status( 401 ).json({
+				ok: false,
+				msg: 'Oops! Something went wrong.'
+			})
+		}
+ 
 		const shopCart = await Store.findOne({ uid, type: 'shopCart' })
 		const wishList = await Store.findOne({ uid, type: 'wishList' })
 
@@ -81,14 +87,20 @@ export const deleteItemById: RequestHandler = async ( req, res ) => {
 	
 	const { uid, type } = req.params
 	const { productId } = req.body
-	const token = req.session.access_token
+	const token = req.headers['x-token'] as string
 	const typeT = ( type as IStoreType )
 
 	try {
 
 		const uidLogged = getUserID( token )
 
-		compareIds( uid, uidLogged )
+		if( !compareIds( uid, uidLogged ) ) {
+
+			return res.status( 401 ).json({
+				ok: false,
+				msg: 'Oops! Something went wrong.'
+			})
+		}
 
 		await Store.findOneAndUpdate({ uid, type: typeT }, {
 			$pull: {
@@ -116,14 +128,21 @@ export const updateItemById: RequestHandler = async ( req, res ) => {
 	
 	const { uid, type } = req.params
 	const { productId, count } = req.body
-	const token = req.session.access_token
+	const token = req.headers['x-token'] as string
 	const typeT = ( type as IStoreType )
 
 	try {
 
 		const uidLogged = getUserID( token )
 
-		compareIds( uid, uidLogged )
+		if( !compareIds( uid, uidLogged ) ) {
+
+			return res.status( 401 ).json({
+				ok: false,
+				msg: 'Oops! Something went wrong.'
+			})
+		}
+		
 		await Store.findOneAndUpdate(
 			{ 
 				uid, 
@@ -150,6 +169,33 @@ export const updateItemById: RequestHandler = async ( req, res ) => {
 		return res.status( 500 ).json({
 			ok: false,
 			msg: 'Oops! Something went wrong.'
+		})
+	}
+}
+
+export const resetStoreByUid: RequestHandler = async ( req, res ) => {
+	
+	const { type, uid } = req.params
+	const typeT = ( type as IStoreType )
+	
+	try {
+		
+		await Store.findOneAndUpdate({ uid, type: typeT }, {
+			$set: {
+				products: []
+			}
+		})
+
+		return res.status( 200 ).json({
+			ok: true,
+			msg: 'Store Actualizado'
+		})
+	} catch ( error ) {
+		
+        console.log("🚀 ~ file: storeController.ts ~ line 188 ~ constresetStoreByUid:RequestHandler<IParamsResetStoreByUid>= ~ error", error)
+		return res.status( 501 ).json({
+			ok: false,
+			msg: 'Oops! Algo salio mal.'
 		})
 	}
 }

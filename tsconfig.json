@@ -2,13 +2,13 @@
   "compilerOptions": {        
       "module": "commonjs",
       "esModuleInterop": true,        
-      "target": "es2018",
+      "target": "ES6",
       "noImplicitAny": true,        
       "moduleResolution": "node",   
       "strict": false,     
       "sourceMap": true,
       "outDir": "dist",        
-      "baseUrl": "./src",        
+      "baseUrl": "./",        
       "paths": {
           "*": [
               "node_modules/*",

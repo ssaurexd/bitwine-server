@@ -1,22 +1,18 @@
 import express from 'express'
 import cookieSession from 'cookie-session'
 import cors from 'cors'
-import multer from 'multer'
 import path from 'path'
 
 import Database from './database'
 import routes from '../routes'
 
 
-class Server {
+class Server extends Database {
 
 	private app = express()
-	private db = new Database()
-	private upload = multer()
 
-	public init = (): void => {
-
-		this.db.init()
+	public init = async () => {
+		await this.connectDB()
 		this.middlewares()
 	}
 
@@ -28,8 +24,7 @@ class Server {
 		/* habilitar el body */
 		this.app.use( express.urlencoded({ extended: true }) )
 		this.app.use( express.json() )
-
-		this.initCookieSession()
+		
 		this.initRoutes()
 		this.initServer()
 	}
@@ -37,19 +32,18 @@ class Server {
 	
 	private initCors = () => {
 
+		const whiteList: string[] = [
+			'https://bitwine-client.herokuapp.com',
+			'http://localhost:3000'
+		]
 		this.app.use( cors({
-			origin: 'http://localhost:3000',
+			origin: ( origin, cb ) => {
+
+				if( whiteList.indexOf( origin ) !== -1 || !origin ) cb( null, true )
+				else cb( new Error('Not allowed by cors') )
+			},
 			optionsSuccessStatus: 200,
-			credentials: true
-		}))
-	}
-
-	private initCookieSession = () => {
-
-		this.app.use( cookieSession({
-			name: 'access_token',
-			keys: ['key1', 'key2'],
-			httpOnly: true
+			credentials: true,
 		}))
 	}
 
@@ -60,7 +54,7 @@ class Server {
 
 	private initServer = () => {
 
-		this.app.listen( process.env.PORT, () => {
+		this.app.listen( process.env.PORT || 3000, () => {
 
 			console.log(`Server ON --> ${ process.env.BASE_PATH }:${ process.env.PORT }`)
 		})

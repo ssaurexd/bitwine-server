@@ -43,7 +43,6 @@ productRouter.get( '/by-category/:category',
 	listProductsByCategory
 )
 productRouter.get( '/list-all',
-	isAuthenticatedAndAdmin,
 	listAllProducts
 )
 productRouter.get( '/by-slug/:slug',

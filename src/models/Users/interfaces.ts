@@ -11,7 +11,7 @@ export interface IUser extends Document {
 	address?: IUserAddress[]
 }
 
-export interface IUserAddress extends Document {
+export interface IUserAddress {
 	name: string,
 	lastName?: string,
 	street: string,

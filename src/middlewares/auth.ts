@@ -1,22 +1,17 @@
 import { RequestHandler } from 'express'
 import jwt from 'jsonwebtoken'
 
-import User from '../models/Users'
+import Users from '../models/Users'
 import { getUserID } from '../helpers/jwt'
 
 
 export const isAuthenticated: RequestHandler = async ( req, res, next ) => {
 
-	let token = req.session.access_token
+	const token = req.headers['x-token'] as string
 	
 	if( !token ) {
 		
-		token = req.headers['x-token']
-	}
-	
-	if( !token ) {
-		
-		console.log("🚀 ~ file: auth.ts ~ line 8 ~ constisAuthenticated:RequestHandler --> No hay token" )
+		console.log("🚀 ~ file: auth.ts ~ line 8 ~ constisAuthenticated:RequestHandler --> No hay token", { token } )
 		return res.status( 401 ).json({
 			ok: false,
 			msg: 'Oops! Algo salio mal.'
@@ -40,11 +35,7 @@ export const isAuthenticated: RequestHandler = async ( req, res, next ) => {
 
 export const isAuthenticatedAndAdmin: RequestHandler = async ( req, res, next ) => {
 
-	let token = req.session.access_token
-	
-	if( !token ) {
-		token = req.headers['x-token']
-	}
+	const token = req.headers['x-token'] as string
 	
 	if( !token ) {
 		
@@ -68,7 +59,7 @@ export const isAuthenticatedAndAdmin: RequestHandler = async ( req, res, next ) 
 	}
 
 	const uid = getUserID( token )
-	const { role } = await User.findById( uid )
+	const { role } = await Users.findById( uid )
 
 	if( role !== 'admin' ) {
 
