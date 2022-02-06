@@ -1,15 +1,15 @@
 import { RequestHandler } from 'express'
 import jwt from 'jsonwebtoken'
 
-import User from '../models/Users'
-import { IUser } from '../models/Users/interfaces'
+import Users from '../models/Users'
+import { IUser, IUserAddress } from '../models/Users/interfaces'
 import { setUserToken, getUserID } from '../helpers/jwt'
 
 
 export const signUp: RequestHandler = async ( req, res ) => {
 
 	const newUserData: IUser = req.body
-	let user = await User.findOne({ email: newUserData.email })
+	let user = await Users.findOne({ email: newUserData.email })
 
 	if( user ) {
 		
@@ -19,8 +19,8 @@ export const signUp: RequestHandler = async ( req, res ) => {
 		})
 	}
 
-	user = new User( newUserData )
-	const hashedPassword = User.hashPassword( user.password )
+	user = new Users( newUserData )
+	const hashedPassword = Users.hashPassword( user.password )
 
 	try {
 
@@ -47,7 +47,7 @@ export const signUp: RequestHandler = async ( req, res ) => {
 export const logIn: RequestHandler = async ( req, res ) => {
 
 	const { email, password }: IUser = req.body
-	const user = await User.findOne({ email })
+	const user = await Users.findOne({ email })
 
 	if( !user ) {
 		
@@ -57,7 +57,7 @@ export const logIn: RequestHandler = async ( req, res ) => {
 		})
 	}
 
-	const isCorrectPassword = User.comparePasswords( password, user.password )
+	const isCorrectPassword = Users.comparePasswords( password, user.password )
 
 	if( !isCorrectPassword ) {
 
@@ -92,7 +92,7 @@ export const refreshToken: RequestHandler = async ( req, res ) => {
 		})
 	}
 
-	const user = await User.findOne({ _id: uid })
+	const user = await Users.findOne({ _id: uid })
 	
 	try {
 		
@@ -118,4 +118,54 @@ export const logOut: RequestHandler = ( req, res ) => {
 	return res.status( 200 ).json({
 		ok: true
 	})
+}
+
+export const addNewAddress: RequestHandler<{ uid: string }, any, IUserAddress> = async ( req, res ) => {
+
+	const { uid } = req.params
+	const {
+		delegation,
+		email,
+		houseNumber,
+		name,
+		phone,
+		state,
+		street,
+		suburb,
+		zip, 
+		lastName = ''
+	} = req.body
+
+	try {
+		const newAddress: IUserAddress = {
+			delegation,
+			email, 
+			houseNumber, 
+			name, 
+			phone, 
+			state, 
+			street, 
+			suburb, 
+			zip, 
+			lastName
+		}
+		
+		await Users.findByIdAndUpdate( uid, {
+			$addToSet: {
+				address: newAddress
+			}
+		})
+
+		return res.status( 200 ).json({
+			ok: true,
+			msg: 'Dirección Agregada'
+		})
+	} catch ( error ) {
+
+        console.log("🚀 ~ file: userController.ts ~ line 142 ~ constaddNewAddress:RequestHandler<{uid:string},any,IUserAddress>= ~ error", error)
+		return res.status( 501 ).json({
+			ok: false,
+			msg: 'Oops! Algo salio mal.'
+		})
+	}
 }

@@ -85,7 +85,7 @@ export const userSchema = new Schema<IUser, IUserModel>({
 })
 
 
-/* eliminamos el __v, _id y contraseña de lo que regresa mongoose */
+/* eliminamos el __v y contraseña de lo que regresa mongoose */
 userSchema.methods.toJSON = function () {
 
 	const { __v, password, ...user } = this.toObject()

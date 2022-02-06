@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express'
 import jwt from 'jsonwebtoken'
 
-import User from '../models/Users'
+import Users from '../models/Users'
 import { getUserID } from '../helpers/jwt'
 
 
@@ -59,7 +59,7 @@ export const isAuthenticatedAndAdmin: RequestHandler = async ( req, res, next ) 
 	}
 
 	const uid = getUserID( token )
-	const { role } = await User.findById( uid )
+	const { role } = await Users.findById( uid )
 
 	if( role !== 'admin' ) {
 

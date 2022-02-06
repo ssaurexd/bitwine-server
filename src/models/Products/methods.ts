@@ -1,4 +1,3 @@
-import { Types } from 'mongoose'
 import { IProduct } from './interfaces'
 import Product from './index'
 import Category from '../Categories'

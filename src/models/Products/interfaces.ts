@@ -21,6 +21,18 @@ export interface IProduct {
 	slug: string,
 }
 
+export interface IProductFromFrontEnd {
+	_id: string,
+	price: number,
+	discount: number,
+	priceWithDiscount: number,
+	count: number,
+	name: string,
+	description: string,
+	slug: string,
+	image: string
+}
+
 export interface IProductModel extends Model<IProduct> {
 	getProductsByCategory: ( query: any, category: string, limit?: number, page?: number ) => Promise<{ products: IProduct[], total: number}>
 }
