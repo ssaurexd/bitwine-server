@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
 
-import { isAuthenticated } from '../middlewares/auth'
+import { isAuthenticated, isAuthenticatedAndAdmin } from '../middlewares/auth'
 import { validateBody } from '../middlewares/body'
 import * as salesController from '../controllers/salesController'
 
@@ -17,6 +17,11 @@ salesRouter.post( '/add-new-sale',
 		validateBody
 	],
 	salesController.addNewSaleForUser
+)
+
+salesRouter.post( '/get-all-pending', 
+	isAuthenticatedAndAdmin,
+	salesController.getAllSalesPending
 )
 
 export default salesRouter

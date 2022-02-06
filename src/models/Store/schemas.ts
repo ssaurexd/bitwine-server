@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose'
-import User from '../../models/Users'
+import Users from '../../models/Users'
 import { IStore, IStoreModel, IStoreProduct } from './interfaces'
 
 export const storeProductSchema = new Schema<IStoreProduct>({
@@ -42,7 +42,7 @@ export const storeProductSchema = new Schema<IStoreProduct>({
 export const storeSchema = new Schema<IStore, IStoreModel>({
 	uid: {
 		type: Schema.Types.ObjectId,
-		ref: User,
+		ref: Users,
 		required: true
 	},
 	type: {

@@ -1,6 +1,9 @@
 import { Schema, Types } from 'mongoose'
-import { userAddressSchema } from '../Users/schemas'
 import { ISalesSchema, IShipment } from './interfaces'
+import { userAddressSchema } from '../Users/schemas'
+
+import Users from '../Users'
+
 
 export const shipmentSchema = new Schema<IShipment>({
 	name: {
@@ -34,7 +37,8 @@ export const salesSchema = new Schema<ISalesSchema>({
 	},
 	uid: {
 		type: Schema.Types.ObjectId,
-		required: false
+		required: false,
+		ref: Users
 	},
 	email: {
 		type: String,
@@ -43,6 +47,12 @@ export const salesSchema = new Schema<ISalesSchema>({
 	address: {
 		type: userAddressSchema,
 		required: true
+	},
+	status: {
+		type: String,
+		require: true,
+		enum: [ 'pending', 'sent', 'late', 'done' ],
+		default: 'pending'
 	}
 }, {
 	timestamps: true
