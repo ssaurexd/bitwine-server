@@ -69,7 +69,7 @@ export const uploadProductImages: RequestHandler = async ( req, res ) => {
 
 		req.body = req.files
 		const { images, image } = req.body
-		const imagesPath = images.map(( item: any ) => item.path.replace('public/', '') )
+		const imagesPath = images.map(( item: { path : string } ) => item.path.replace('public/', '') )
 		const imagePath = image[0].path.replace('public/', '')
 
 		return res.status( 201 ).json({
@@ -100,7 +100,7 @@ export const listAllProducts: RequestHandler = async ( req, res ) => {
 	}
 }
 
-export const listProducts: RequestHandler<any, any, any, IListQuery> = async ( req, res ) => {
+export const listProducts: RequestHandler<unknown, unknown, unknown, IListQuery> = async ( req, res ) => {
 
 	const { limitQuery = '12', pageQuery = '0' } = req.query
 	const limit = parseInt( limitQuery )
@@ -156,12 +156,11 @@ interface IReqBodyListProductsForMarket {
 	limitQuery: number,
 	pageQuery: number
 }
-export const listProductsForMarket: RequestHandler<any, any, IReqBodyListProductsForMarket> = async ( req, res ) => {
+export const listProductsForMarket: RequestHandler<unknown, unknown, IReqBodyListProductsForMarket> = async ( req, res ) => {
 
 	const { 
 		limitQuery = 12, 
 		pageQuery = 0,
-		categories = [],
 		query = '',
 		rate = 0,
 		rangePrice = [ 0, 999999 ]
@@ -328,7 +327,7 @@ export const listProductsForMarket: RequestHandler<any, any, IReqBodyListProduct
 	}
 }
 
-export const listProductsByCategory: RequestHandler<{ category: string }, any, any, IListQuery> = async ( req, res ) => {
+export const listProductsByCategory: RequestHandler<{ category: string }, unknown, unknown, IListQuery> = async ( req, res ) => {
 	
 	const { limitQuery, pageQuery } = req.query
 	const { category } = req.params
@@ -475,7 +474,7 @@ export const getProductStockById: RequestHandler = async ( req, res ) => {
 interface IGetProductsByQueryBody {
 	query: string
 }
-export const getProductsByQuery: RequestHandler<RequestParamHandler, any, IGetProductsByQueryBody> = async ( req, res ) => {
+export const getProductsByQuery: RequestHandler<RequestParamHandler, unknown, IGetProductsByQueryBody> = async ( req, res ) => {
 
 	const { query } = req.body
 
