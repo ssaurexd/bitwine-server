@@ -1,14 +1,26 @@
 import multer from 'multer'
 import { v4 as uuidv4 } from 'uuid'
-import path from 'path'
 
 
 const imageStorage = multer.diskStorage({
 	destination: 'public/images/products',
 	filename: ( req, file, next ) => {
 
-		next( null, uuidv4() + path.extname( file.originalname ) )
+		const { mimetype } = file
+
+		next( null, uuidv4() + `.${ mimetype.split('/')[1] }` )
+	}
+})
+
+const avatarStorage = multer.diskStorage({
+	destination: 'public/images/avatars',
+	filename: ( req, file, next ) => {
+
+		const { mimetype } = file
+
+		next( null, uuidv4() + `.${ mimetype.split('/')[1] }`)
 	}
 })
 
 export const productImageMulter = multer({ storage: imageStorage }) 
+export const avatarImageMulter = multer({ storage: avatarStorage }) 
