@@ -79,6 +79,10 @@ export const userSchema = new Schema<IUser, IUserModel>({
 	address: {
 		type: [ userAddressSchema ],
 		required: false
+	},
+	avatar: {
+		type: String,
+		require: false
 	}
 }, {
 	timestamps: true

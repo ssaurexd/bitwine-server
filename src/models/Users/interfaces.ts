@@ -8,7 +8,8 @@ export interface IUser extends Document {
 	name: string,
 	lastName?: string,
 	role?: Role,
-	address?: IUserAddress[]
+	address?: IUserAddress[],
+	avatar?: string
 }
 
 export interface IUserAddress {

@@ -79,7 +79,7 @@ export const logIn: RequestHandler = async ( req, res ) => {
 export const refreshToken: RequestHandler = async ( req, res ) => {
 
 	const token = req.headers['x-token'] as string
-	let uid: any 
+	let uid: string
 	
 	try {
 		
@@ -120,7 +120,7 @@ export const logOut: RequestHandler = ( req, res ) => {
 	})
 }
 
-export const addNewAddress: RequestHandler<{ uid: string }, any, IUserAddress> = async ( req, res ) => {
+export const addNewAddress: RequestHandler<{ uid: string }, unknown, IUserAddress> = async ( req, res ) => {
 
 	const { uid } = req.params
 	const {
@@ -163,6 +163,82 @@ export const addNewAddress: RequestHandler<{ uid: string }, any, IUserAddress> =
 	} catch ( error ) {
 
         console.log("🚀 ~ file: userController.ts ~ line 142 ~ constaddNewAddress:RequestHandler<{uid:string},any,IUserAddress>= ~ error", error)
+		return res.status( 501 ).json({
+			ok: false,
+			msg: 'Oops! Algo salio mal.'
+		})
+	}
+}
+
+export const changeAvatar: RequestHandler = async ( req, res ) => {
+
+	const token = req.headers['x-token'] as string
+
+	if( !req.files ) {
+		
+		return res.status( 400 ).json({
+			ok: false,
+			msg: 'Oops! Algo salio mal o faltan las imagenes'
+		})
+	} 
+
+	try {
+
+		req.body = req.files
+		const { image } = req.body
+		const imagePath = image[0].path.replace('public/', '')
+
+		const uid = getUserID( token )
+
+		await Users.findByIdAndUpdate( uid, {
+			$set: {
+				avatar: imagePath
+			}
+		})
+
+		return res.status( 201 ).json({
+			ok: true,
+			msg: 'Avatar Actualizado',
+			imagePath
+		})
+		
+	} catch ( error ) {
+		
+        console.log("🚀 ~ file: userController.ts ~ line 186 ~ constchangeAvatar:RequestHandler= ~ error", error)
+		return res.status( 501 ).json({
+			ok: false,
+			msg: 'Oops! Algo salio mal.'
+		})
+	}
+}
+
+interface IUpdateUserProfile {
+	name: string
+	lastName: string	
+}
+export const updateUserProfile: RequestHandler<unknown, unknown, IUpdateUserProfile> = async ( req, res ) => {
+	
+	const { lastName, name } = req.body
+
+	try {
+
+		const token = req.headers['x-token'] as string
+		const uid = getUserID( token )
+
+		await Users.findByIdAndUpdate( uid, {
+			$set: {
+				name,
+				lastName
+			}
+		})
+
+		return res.status( 200 ).json({
+			ok: true,
+			msg: 'Usuario actualizado'
+		})
+	} catch ( error ) {
+		
+        console.log("🚀 ~ file: userController.ts ~ line 220 ~ constupdateUserProfile:RequestHandler= ~ error", error)
 		return res.status( 501 ).json({
 			ok: false,
 			msg: 'Oops! Algo salio mal.'

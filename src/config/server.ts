@@ -10,7 +10,7 @@ class Server extends Database {
 
 	private app = express()
 
-	public init = async () => {
+	public init = async (): Promise<void> => {
 		await this.connectDB()
 		this.middlewares()
 	}
