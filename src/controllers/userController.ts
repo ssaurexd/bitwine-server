@@ -245,3 +245,49 @@ export const updateUserProfile: RequestHandler<unknown, unknown, IUpdateUserProf
 		})
 	}
 }
+
+interface IChangeUserPasswordBody {
+	oldPassword: string,
+	newPassword: string
+}
+export const changeUserPassword: RequestHandler<unknown, unknown, IChangeUserPasswordBody> = async ( req, res ) => {
+	
+	const {
+		newPassword,
+		oldPassword
+	} = req.body
+	
+	try {
+		
+		const token = req.headers['x-token'] as string
+		const uid = getUserID( token )
+		const user = await Users.findById( uid )
+		const isValidPassword = Users.comparePasswords( oldPassword, user.password )
+
+		if( !isValidPassword ) {
+
+			return res.status( 401 ).json({
+				ok: false,
+				msg: 'Contraseña incorrecta',
+				errorCode: 'E401'
+			})
+		}
+
+		const newPasswordForUser = Users.hashPassword( newPassword )
+
+		user.password = newPasswordForUser
+		await user.save()
+
+		return res.status( 200 ).json({
+			ok: true,
+			msg: 'Contraseña Actualizada'
+		})
+	} catch ( error ) {
+		
+        console.log("🚀 ~ file: userController.ts ~ line 258 ~ constchangeUserPassword:RequestHandler= ~ error", error)
+		return res.status( 501 ).json({
+			ok: false,
+			msg: 'Oops! Algo salio mal!'
+		})
+	}
+}

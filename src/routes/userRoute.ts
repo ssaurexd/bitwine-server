@@ -72,4 +72,14 @@ userRouter.put( '/edit-user',
 	userController.updateUserProfile
 )
 
+userRouter.put( '/change-password',
+	isAuthenticated,
+	[
+		body('oldPassword').not().isEmpty().withMessage('El campo oldPassword es obligatorio'),
+		body('newPassword').not().isEmpty().withMessage('El campo newPassword es obligatorio'),
+		validateBody
+	],
+	userController.changeUserPassword
+)
+
 export default userRouter
