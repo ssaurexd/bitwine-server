@@ -536,3 +536,23 @@ export const getProductsByQuery: RequestHandler<RequestParamHandler, unknown, IG
 		})
 	}
 }
+
+export const getAllProductSlugs: RequestHandler = async ( req, res ) => {
+	
+	try {
+		
+		const productSlugs = await Product.find({}).select({ slug: 1 })
+
+		return res.status( 200 ).json({
+			ok: true,
+			productSlugs
+		})
+	} catch ( error ) {
+		
+        console.log("🚀 ~ file: productController.ts ~ line 545 ~ constgetAllProductSlugs:RequestHandler= ~ error", error)
+		return res.status( 500 ).json({
+			ok: false,
+			msg: 'Oops! Something went wrong'
+		})
+	}
+}

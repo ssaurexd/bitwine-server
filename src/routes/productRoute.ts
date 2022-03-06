@@ -3,18 +3,7 @@ import { body,  } from 'express-validator'
 
 import { validateBody } from '../middlewares/body'
 import { isAuthenticatedAndAdmin } from '../middlewares/auth'
-import { 
-	getFlashSales,
-	createProduct, 
-	listProducts,
-	uploadProductImages,
-	listProductsByCategory,
-	getProductBySlug,
-	listAllProducts,
-	getProductStockById,
-	getProductsByQuery,
-	listProductsForMarket
-} from '../controllers/productController'
+import * as productController from '../controllers/productController'
 import { productImageMulter } from '../config/multer'
 
 
@@ -34,19 +23,19 @@ productRouter.route( '/' )
 			body('images').not().isEmpty().withMessage('Las imagenes son requeridas'),
 			validateBody
 		],
-		createProduct
+		productController.createProduct
 	)
 	.get(
-		listProducts
+		productController.listProducts
 	)
 productRouter.get( '/by-category/:category',
-	listProductsByCategory
+	productController.listProductsByCategory
 )
 productRouter.get( '/list-all',
-	listAllProducts
+	productController.listAllProducts
 )
 productRouter.get( '/by-slug/:slug',
-	getProductBySlug
+	productController.getProductBySlug
 )
 productRouter.post( '/upload-product-images', 
 	isAuthenticatedAndAdmin,
@@ -54,28 +43,31 @@ productRouter.post( '/upload-product-images',
 		{ name: 'image', maxCount: 1 },
 		{ name: 'images', maxCount: 9 }
 	]),
-	uploadProductImages
+	productController.uploadProductImages
 )
 productRouter.get( '/flash-sales', 
-	getFlashSales
+	productController.getFlashSales
 )
 productRouter.post( '/product-stock', 
 	[
 		body('productId').not().isEmpty().withMessage('El id del producto es requerido'),
 		validateBody
 	],
-	getProductStockById
+	productController.getProductStockById
 )
 productRouter.post( '/search-by-query', 
 	[
 		body('query').not().isEmpty().withMessage('El query es requerido'),
 		validateBody
 	],
-	getProductsByQuery
+	productController.getProductsByQuery
 )
 
 productRouter.post( '/list-products-for-market', 
-	listProductsForMarket
+	productController.listProductsForMarket
 )
+
+/* Es para el getStaticPaths de Next */
+productRouter.get( '/get-product-slugs', productController.getAllProductSlugs )
 
 export default productRouter
